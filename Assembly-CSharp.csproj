@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CollisionHandler.cs" />
     <Compile Include="Assets\Scripts\Movement.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/ProgramSoftware/Unity/2019.4.17f1c1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

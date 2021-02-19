@@ -5,21 +5,20 @@ namespace ProjectBoost
     public class Movement : MonoBehaviour
     {
         private Rigidbody _rb;
-        [SerializeField] private float _thrust = 300.0f;
-        [SerializeField] private float _rotationT = 300.0f;
+        private AudioSource _as;
+        [SerializeField] private float _mainThrust = 300.0f;
+        [SerializeField] private float _rotationThrust = 300.0f;
+        [SerializeField] private AudioClip _mainEngine = null;
 
         private void Start()
         {
             _rb = GetComponent<Rigidbody>();
+            _as = GetComponent<AudioSource>();
         }
 
         private void Update()
         {
             ProcessRotation();
-        }
-
-        private void FixedUpdate()
-        {
             ProcessThrust();
         }
 
@@ -27,7 +26,15 @@ namespace ProjectBoost
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                _rb.AddRelativeForce(Vector3.up * _thrust * Time.deltaTime);
+                _rb.AddRelativeForce(Vector3.up * _mainThrust * Time.deltaTime);
+                if (!_as.isPlaying)
+                {
+                    _as.PlayOneShot(_mainEngine);
+                }
+            }
+            else
+            {
+                _as.Stop();
             }
         }
 
@@ -35,11 +42,11 @@ namespace ProjectBoost
         {
             if (Input.GetKey(KeyCode.A))
             {
-                ApplyRotation(_rotationT);
+                ApplyRotation(_rotationThrust);
             }
             else if (Input.GetKey(KeyCode.D))
             {
-                ApplyRotation(-_rotationT);
+                ApplyRotation(-_rotationThrust);
             }
         }
 
