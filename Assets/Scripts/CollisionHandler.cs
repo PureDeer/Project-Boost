@@ -8,10 +8,14 @@ namespace ProjectBoost
         private int _totalScene;
         private Movement _movement;
         private AudioSource _as;
-        private bool _isTrans = false;
+        private bool _isTrans;
         [SerializeField] private float _delayTime = 1.5f;
-        [SerializeField] private AudioClip _crash = null;
-        [SerializeField] private AudioClip _success = null;
+
+        [SerializeField] private AudioClip _crashAudio = null;
+        [SerializeField] private AudioClip _successAudio = null;
+
+        [SerializeField] private ParticleSystem _crashParticle = null;
+        [SerializeField] private ParticleSystem _successParticle = null;
 
         private void Awake()
         {
@@ -22,6 +26,7 @@ namespace ProjectBoost
 
         private void OnCollisionEnter(Collision other)
         {
+            // 如果处于以下的某个状态中，那么就不继续进行碰撞
             if (_isTrans) return;
             var colTag = other.gameObject.tag;
 
@@ -51,7 +56,10 @@ namespace ProjectBoost
             _isTrans = true;
             // 进入状态时。停止前一个状态的声音
             _as.Stop();
-            _as.PlayOneShot(_success);
+            // 播放指定音效
+            _as.PlayOneShot(_successAudio);
+            // 播放粒子特效
+            _successParticle.Play();
             _delayTime = 4.0f;
             _movement.enabled = false;
             Invoke(nameof(LoadNextLevel), _delayTime);
@@ -61,7 +69,8 @@ namespace ProjectBoost
         {
             _isTrans = true;
             _as.Stop();
-            _as.PlayOneShot(_crash);
+            _as.PlayOneShot(_crashAudio);
+            _crashParticle.Play();
             _delayTime = 2.0f;
             _movement.enabled = false;
             Invoke(nameof(ReloadLevel), _delayTime);
