@@ -8,7 +8,10 @@ namespace ProjectBoost
         private int _totalScene;
         private Movement _movement;
         private AudioSource _as;
+
         private bool _isTrans;
+        private bool _isCanceled;
+
         [SerializeField] private float _delayTime = 1.5f;
 
         [SerializeField] private AudioClip _crashAudio = null;
@@ -17,11 +20,38 @@ namespace ProjectBoost
         [SerializeField] private ParticleSystem _crashParticle = null;
         [SerializeField] private ParticleSystem _successParticle = null;
 
+        private BoxCollider[] _rocketParts;
+
         private void Awake()
         {
             _as = GetComponent<AudioSource>();
             _totalScene = SceneManager.sceneCountInBuildSettings;
             _movement = GetComponent<Movement>();
+
+            _rocketParts = gameObject.GetComponentsInChildren<BoxCollider>();
+        }
+
+        private void Update()
+        {
+            RespondToDebugKey();
+        }
+
+        private void RespondToDebugKey()
+        {
+            if (Input.GetKeyDown(KeyCode.L)) LoadNextLevel();
+            else if (Input.GetKeyDown(KeyCode.C))
+            {
+                ManipulateCollider(_isCanceled);
+                _isCanceled = !_isCanceled;
+            }
+        }
+
+        private void ManipulateCollider(bool isCanceled)
+        {
+            foreach (var part in _rocketParts)
+            {
+                if (part) part.enabled = isCanceled;
+            }
         }
 
         private void OnCollisionEnter(Collision other)
